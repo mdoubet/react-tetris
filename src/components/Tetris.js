@@ -21,7 +21,7 @@ const Tetris = () => {
     const [dropTime, setDropTime] = useState(null);
     const [gameOver, setGameOver] = useState(false);
 
-    const [player, updatePlayerPos, resetPlayer] = usePlayer();
+    const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
     const [stage, setStage] = useStage(player, resetPlayer);
 
     console.log('re-render');
@@ -51,21 +51,26 @@ const Tetris = () => {
             updatePlayerPos({ x: 0, y: 0, collided: true });
         }
     }
+
     const dropPlayer = () => {
         drop();
-    }
+    };
+
     const move = ({ keyCode }) => {
         if (!gameOver) {
             if(keyCode === 37) { //37 is left arrow
                 moveLaterally(-1) //moves player one to the left
             } else if (keyCode === 39) { //right arrow
                 moveLaterally(1)         //move one to the right
-            } else if (keyCode === 40){ //down arrow
+            } else if (keyCode === 40) { //down arrow
                 dropPlayer();
+            } else if (keyCode === 38){
+                playerRotate(stage, 1);
             }
         }
 
     }
+
     return (
         <StyledTetrisWrapper role="button" tabIndex="0" onKeyDown={e => move(e)}>
             <StyledTetris>
