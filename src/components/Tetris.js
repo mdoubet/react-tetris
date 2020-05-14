@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import  { createStage } from "../gameHelpers";
+import  { createStage, checkCollision } from "../gameHelpers";
 
 //styled components
 import { StyledTetrisWrapper } from "./styles/styledTetris";
@@ -26,17 +26,30 @@ const Tetris = () => {
 
     console.log('re-render');
 
-    const movePlayer = dir => {
-        updatePlayerPos({ x: dir, y: 0 });
+    const moveLaterally = dir => {
+        if (!checkCollision(player, stage, {x: dir, y: 0})){
+            updatePlayerPos({x: dir, y: 0});
+        }
     }
 
     const startGame = () => {
         //reset everything
         setStage(createStage());
         resetPlayer();
+        setGameOver(false);
     }
     const drop = () => {
-        updatePlayerPos({ x: 0, y: 1, collided: false })
+        if(!checkCollision(player, stage, { x: 0, y: 1 })) {
+            updatePlayerPos({x: 0, y: 1, collided: false})
+        } else {
+            // check for game over condition
+            if(player.pos.y < 1) {
+                console.log("GAME OVER !!!!");
+                setGameOver(true);
+                setDropTime(null);
+            }
+            updatePlayerPos({ x: 0, y: 0, collided: true });
+        }
     }
     const dropPlayer = () => {
         drop();
@@ -44,9 +57,9 @@ const Tetris = () => {
     const move = ({ keyCode }) => {
         if (!gameOver) {
             if(keyCode === 37) { //37 is left arrow
-                movePlayer(-1) //moves player one to the left
+                moveLaterally(-1) //moves player one to the left
             } else if (keyCode === 39) { //right arrow
-                movePlayer(1)         //move one to tright
+                moveLaterally(1)         //move one to the right
             } else if (keyCode === 40){ //down arrow
                 dropPlayer();
             }
