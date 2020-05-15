@@ -3,8 +3,22 @@ import { createStage } from "../gameHelpers";
 
 export const useStage = (player, resetPlayer) => {
     const [stage, setStage] = useState(createStage());
+    const [rowsCleared, setRowsCleared] = useState(0);
 
     useEffect(()=> {
+        setRowsCleared(0);
+
+        const sweepRows = newStage => 
+            newStage.reduce((newRows, row)=>{
+                if(row.findIndex(cell => cell[0] === 0) === -1) {// check for a 0 in the row
+                    setRowsCleared(prev => prev + 1);
+                    newRows.unshift(new Array(newStage[0].length).fill([0,'clear']));
+                    return newRows;
+                }
+                newRows.push(row);
+                return newRows;
+            }, [])
+
         const updateStage = prevStage => {
             //first flush the stage
             //i.e. make sure all cells marked 'clear' have a 0
@@ -27,6 +41,7 @@ export const useStage = (player, resetPlayer) => {
             // check if player collided
             if(player.collided) {
                 resetPlayer();
+                return sweepRows(newStage);
             }
             return newStage;
         };
