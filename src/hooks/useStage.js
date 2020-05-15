@@ -10,9 +10,12 @@ export const useStage = (player, resetPlayer) => {
 
         const sweepRows = newStage =>
             newStage.reduce((newRows, row)=>{
-                if(row.findIndex(cell => cell[0] === 0) === -1) {// check for a 0 in the row
-                    setRowsCleared(prev => prev + 1);
+                if(row.findIndex(cell => cell[0] === 0) === -1) {// check for no 0s in the row
+
+
                     newRows.unshift(new Array(newStage[0].length).fill([0,'clear']));
+                    setRowsCleared(prev => prev + 1);
+                    console.log("cleared a row!");
                     return newRows;
                 }
                 newRows.push(row);
@@ -47,7 +50,6 @@ export const useStage = (player, resetPlayer) => {
         };
 
         setStage(prev => updateStage(prev))
-    }, [player]);
-
+    }, [player, resetPlayer]);
     return [stage, setStage, rowsCleared];
 }

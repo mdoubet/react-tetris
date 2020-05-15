@@ -10,6 +10,7 @@ import { StyledTetris } from "./styles/styledTetris";
 import { usePlayer } from "../hooks/usePlayer";
 import { useStage } from "../hooks/useStage";
 import { useInterval } from "../hooks/useInterval";
+import { useGameStatus } from "../hooks/useGameStatus";
 
 //components
 import Stage from "./Stage";
@@ -23,9 +24,10 @@ const Tetris = () => {
     const [gameOver, setGameOver] = useState(false);
 
     const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
-    const [stage, setStage] = useStage(player, resetPlayer);
+    const [stage, setStage, rowsCleared] = useStage(player, resetPlayer);
 
-    console.log('re-render');
+    const [score, setScore, rows, setRows, level, setLevel, timerInterval, setTimerInterval] = useGameStatus(rowsCleared)
+
 
     const moveLaterally = dir => {
         if (!checkCollision(player, stage, {x: dir, y: 0})){
@@ -38,9 +40,18 @@ const Tetris = () => {
         setStage(createStage());
         resetPlayer();
         setGameOver(false);
-        setDropTime(800);
+        setTimerInterval(1000);
+        setDropTime(1000);
+        setScore(0);
+        setLevel(1);
+        setRows(0);
+
     }
     const drop = () => {
+
+
+
+
         if(!checkCollision(player, stage, { x: 0, y: 1 })) {
             updatePlayerPos({x: 0, y: 1, collided: false})
         } else {
@@ -56,12 +67,11 @@ const Tetris = () => {
 
     const keyUp = ({ keyCode }) => {
         if(keyCode === 40){
-            console.log("interval on")
-            setDropTime(800);
+            console.log(timerInterval)
+            setDropTime(timerInterval);
         }
     }
     const dropPlayer = () => {
-        console.log("interval off")
         setDropTime(null);
         drop();
     };
@@ -98,9 +108,9 @@ const Tetris = () => {
                     ) : (
 
                     <div>
-                    <Display text="Score" />
-                    <Display text="Rows" />
-                    <Display text="Level" />
+                    <Display text={`Score: ${score}`} />
+                    <Display text={`Rows: ${rows}`} />
+                    <Display text={`Level: ${level}`} />
                     </div>
                     )}
 
