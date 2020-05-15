@@ -8,7 +8,7 @@ export const useStage = (player, resetPlayer) => {
     useEffect(()=> {
         setRowsCleared(0);
 
-        const sweepRows = newStage => 
+        const sweepRows = newStage =>
             newStage.reduce((newRows, row)=>{
                 if(row.findIndex(cell => cell[0] === 0) === -1) {// check for a 0 in the row
                     setRowsCleared(prev => prev + 1);
@@ -49,5 +49,5 @@ export const useStage = (player, resetPlayer) => {
         setStage(prev => updateStage(prev))
     }, [player]);
 
-    return [stage, setStage];
+    return [stage, setStage, rowsCleared];
 }
