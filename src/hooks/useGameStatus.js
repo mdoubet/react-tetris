@@ -19,14 +19,14 @@ export const useGameStatus = rowsCleared => {
         }
         // Level Up & increase speed when 10 rows are cleared
         console.log("rows : ", rows);
-        if(rows > ((level * 3) - 1)) {
+        if(rows > ((level * 10) - 1)) {
             setLevel(prev => (prev + 1));
             setTimerInterval(prev => (prev * .7 + 50));
 
         }
 
 
-    }, [rows, level, linePoints, rowsCleared])
+    }, [rowsCleared])
 
     useEffect(()=>{
         calcScore();
